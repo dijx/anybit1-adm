@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#self='/root/bin/q:'
+self=${BASH_SOURCE[0]}
+
+case $1 in
+  df) df -hT -x overlay -x tmpfs -x devtmpfs ; echo "some filesystem types were filtered"  ;;
+  f2b) for f in $(fail2ban-client status | grep Jail | cut -d ":" -f2 | xargs | tr -d ",") ; do fail2ban-client status $f | grep -E "Banned IP list:|$" --color ; done ;;
+  dls) for f in {container,image} ; do docker $f ls --all | grep -E " Up |$" --color ; done ; docker network ls ;;
+  dpull) for f in $(docker image ls | grep latest | awk {'print $1'}) ; do docker pull $f ; done ;;
+  nxc-mysql) docker exec -it nextCloud-sql /usr/bin/mysql -u root -pmysqlRoot123 ;;
+  nxc-sqlps) watch -n $2 "docker exec -it nextCloud-sql /usr/bin/mysql -u root -pmysqlRoot123 -e 'show full processlist \G '" ;;
+  nxc-www) docker exec -it --user www-data nextCloud-app bash ;;
+  nxc-approot) docker exec -it nextCloud-app bash ;;
+  chronyc) for f in {sources,sourcestats,tracking} ; do printf "\n___ $f ";  printf "_%.0s" {1..65} ; printf "\n" ; chronyc $f -v ; done ;;
+  edit) vi $self;;
+  *) cat $self | grep -vF "*)" |grep -F ')' | sed s/")"/"\t\t"/g | sed s/"\""//g | tr -d ";;"
+esac
+

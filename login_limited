@@ -1,0 +1,59 @@
+#!/bin/bash
+
+printf " "
+me=${BASH_SOURCE[0]}
+last_file="/adm/bin/login_limited_timestamps/${USER}.timestamp"
+max_try=2
+try=1
+seconds_interval=90
+time_now=$(date +%s)
+time_last=$(cat $last_file 2>/dev/null ||  echo 0)
+time_diff=$(( "$time_now" - "$time_last" ))
+
+function loggerLog {
+    logger -t "${me}::${SSH_CLIENT}::${USER}::$time_now" "try: $try of $max_try::$1" 
+}
+
+function bumpDate {
+    now=$(date +%s)
+    loggerLog "bumping timestamp to $now"
+    echo $now > $last_file
+}
+
+
+loggerLog "login initiated, last login=$time_last, diff=${time_diff}, allowed inteval=$seconds_interval, checking last run"
+
+
+if [[  $time_diff -lt $seconds_interval ]] ; then
+    loggerLog "NOT ALLOWED DUE TO TIMESTAMP"
+    bumpDate
+    exit 128
+fi
+
+
+while [[ $try -le $max_try ]] ; do
+    bumpDate
+    loggerLog "asking for user input"
+    read -s user_input
+    loggerLog "user input: '$user_input'"
+    bumpDate
+    
+    if [[ $user_input == "poproszę o su -" ]] ; then  
+        loggerLog "calling su - for user "
+        su - 
+        bumpDate
+        loggerLog "su exited, finishing now"
+        exit 0
+    fi
+    ((try+=1))
+    loggerLog "no valid user input, increasing counter to $try"
+done
+bumpDate
+loggerLog "EOF"
+exit 1
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+docker run -d \
+-v nextCloud-sql_var_lib_mysql:/var/lib/mysql:rw \
+-v nextCloud-sql_etc:/etc:rw \
+--net nextCloud-net \
+--ip 172.16.1.3 \
+--name nextCloud-sql \
+--restart unless-stopped \
+-e MYSQL_ROOT_PASSWORD=mysqlRoot123 mysql:latest \
+
