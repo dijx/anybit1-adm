@@ -1,4 +1,4 @@
 .gitignore
 .log
-./login_limited_timestamps/
+/login_limited_timestamps/*
 
