@@ -2,8 +2,8 @@ c_name='nextCloud-app'
 
 echo "promoting container $c_name"
 docker run -d \
--v nextcloud_var_www_html:/var/www/html:rw \
--v nextcloud_usr_local_etc:/usr/local/etc/:rw \
+--mount type=bind,source="/opt/docker/mount/nextCloud/app/var_www_html",target="/var/www/html" \
+--mount type=bind,source="/opt/docker/mount/nextCloud/app/usr_local_etc",target="/usr/local/etc" \
 --net nextCloud-net \
 --ip 172.16.1.2 \
 --restart unless-stopped \
@@ -12,4 +12,4 @@ docker run -d \
 echo 'DONE!'
 sleep 3
 echo "installing packages in $c_name"
-docker exec -it nextCloud-app bash -c "apt update ; apt install -y ffmpeg"
+docker exec -it $c_name bash -c "apt update ; apt install -y ffmpeg"
