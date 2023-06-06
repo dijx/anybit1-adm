@@ -2,7 +2,7 @@
 
 printf " "
 me=${BASH_SOURCE[0]}
-last_file="/adm/bin/login_limited_timestamps/${USER}.timestamp"
+last_file="/adm/login_limited_timestamps/${USER}.timestamp"
 max_try=2
 try=1
 seconds_interval=90
@@ -44,7 +44,15 @@ while [[ $try -le $max_try ]] ; do
         bumpDate
         loggerLog "su exited, finishing now"
         exit 0
+    
+    elif [[ $user_input == "poproszę o bash" ]] ; then
+        loggerLog "calling bash for user "
+        bash -i
+        bumpDate
+        loggerLog "bash exited, finishing now"
+        exit 0
     fi
+
     ((try+=1))
     loggerLog "no valid user input, increasing counter to $try"
 done

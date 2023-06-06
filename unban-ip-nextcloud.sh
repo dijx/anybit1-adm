@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source_dir='/var/lib/docker/volumes/nextcloud_var_www_html/_data/data/dx/files/'
+source_dir='/opt/docker/mount/nextCloud/app/var_www_html/data/dx/files/Documents'
 source_file='unban*_*ip.txt'
 unban_command="/usr/bin/fail2ban-client unban"
 logfile=/var/log/nextcloud-unban.log

@@ -2,8 +2,11 @@
 
 CONTAINER=nextCloud-sql
 TIME_STAMP=$(date +%Y%m%d_%H%M)
-FILE_NAME=backup_${TIME_STAMP}.mysqldump
+FILE_PATH="/adm/BACKUP/mysql"
+FILE_NAME="nextcloud_backup_${TIME_STAMP}.mysqldump"
 
-
-docker exec $CONTAINER mysqldump -uroot -pmysqlRoot123 --all-databases --result-file=/BACKUP/${FILE_NAME} && find /adm/BACKUP/mysql/ -type f -mtime +7 -exec rm -f {} \;
+echo "starting mysqldump in container $CONTAINER into $FILE_NAME"
+docker exec $CONTAINER mysqldump -uroot -pmysqlRoot123 --all-databases | bzip2 -c9 > ${FILE_PATH}/${FILE_NAME}.bz2 && \
+find $FILE_PATH -type f -iname '*.mysqldump.bz2' -mtime +2 -delete
+echo "mysqldump finished"
 
