@@ -8,7 +8,7 @@ case $1 in
   f2b) for f in $(fail2ban-client status | grep Jail | cut -d ":" -f2 | xargs | tr -d ",") ; do fail2ban-client status $f | grep -E "Banned IP list:|$" --color ; done ;;
   dls) for f in {container,image} ; do docker $f ls --all | grep -E " Up |$" --color ; done ; docker network ls ;;
   dpull) for f in $(docker image ls | grep -vE "\<none\>|REPOSITORY"| awk {'print $1,":",$2'} | sed s/" "/""/g) ; do docker pull $f ; done ;;
-  dimrm) for f in $(docker image ls| awk {'print $3'}) ; do docker image rm $f ; done ;;
+  dimrm) for f in $(docker image ls | grep -F "<none>" | awk {'print $3'}) ; do docker image rm $f ; done ;;
   nxc-mysql) docker exec -it nextCloud-sql /usr/bin/mysql -u root -pmysqlRoot123 ;;
   nxc-sqlps) watch -n $2 "docker exec -it nextCloud-sql /usr/bin/mysql -u root -pmysqlRoot123 -e 'show full processlist \G '" ;;
   nxc-www) docker exec -it --user www-data nextCloud-app bash ;;
