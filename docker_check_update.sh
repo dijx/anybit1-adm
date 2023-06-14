@@ -2,7 +2,7 @@
 
 info_file="/adm/info/docker_pull.log"
 
-CONTAINES_MONITORED=("nextcloud:26.0.1" "mysql:latest")
+CONTAINES_MONITORED=("nextcloud" "mysql:latest")
 UP_TO_DATE=0
 
 function pullDockerImages {	
